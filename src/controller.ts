@@ -16,7 +16,7 @@ export class Controller{
 
     onDragEnd = (taskType : TaskType, cart : number) =>{
         const task = this.taskList.getTask(cart)
-        console.log(task)
+        
         if (task) {
             switch (taskType){
                 case TaskType.Planed:
