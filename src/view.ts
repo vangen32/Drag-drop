@@ -1,4 +1,6 @@
 import {Task, TaskList, TaskType} from "./model"
+ 
+var isDropPosible : TaskType; //потрібно для збереження типу завдання
 
 export class TaskViewCart{
     private task : Task;
@@ -16,19 +18,20 @@ export class TaskViewCart{
         this.desc = document.createElement("p");
         this.type = document.createElement("p");
         this.task = task;
-        this.drawCart(task);
+        this.drawCart();
     }
-    private drawCart(task : Task){
+    drawCart(){
         this.cart.style.width = "300px";
         this.cart.style.margin = "5px";
         this.cart.style.padding = "2px"
         this.cart.style.border = "2px solid black";
-        this.title.innerText = task.Title;
-        this.deadline.innerText = "To "+task.Deadline.toDateString();
-        this.desc.innerText = task.Desc;
-        this.type.innerText = task.Type;
+        this.cart.style.backgroundColor = "pink";
+        this.title.innerText = this.task.Title;
+        this.deadline.innerText = "To "+ this.task.Deadline.toDateString();
+        this.desc.innerText = this.task.Desc;
+        this.type.innerText = this.task.Type;
         this.cart.append(this.title, this.deadline, this.desc, this.type);
-        this.onDragStart();
+        this.onDrag();
     }
 
     get Type(){
@@ -44,11 +47,16 @@ export class TaskViewCart{
         return this.task.TaskId;
     }
 
-    onDragStart(){
-        this.cart.addEventListener("dragstart",  (event)=>{
+    onDrag(){
+        this.cart.addEventListener("dragstart",  (event : DragEvent)=>{
             event.dataTransfer?.setData("number", this.CartId.toString());
+            isDropPosible = this.task.Type;
+            this.cart.style.backgroundColor = "blue";
         })
-       
+        this.cart.addEventListener("dragend",  (event : DragEvent)=>{
+            event.dataTransfer?.setData("number", this.CartId.toString());
+            this.cart.style.backgroundColor = "pink";
+        })
     }
     
 }
@@ -59,6 +67,8 @@ export class TaskViewCartList{
     private planedTaskCol : HTMLDivElement;
     private inProcesTaskCol : HTMLDivElement;
     private doneTaskCol : HTMLDivElement;
+
+   
     constructor(){
         this.list = [];
         this.planedTaskCol = document.createElement("div");
@@ -67,6 +77,9 @@ export class TaskViewCartList{
         this.doneTaskCol.style.width = "400px";
         this.inProcesTaskCol.style.width = "400px";
         this.planedTaskCol.style.width = "400px";
+        this.doneTaskCol.style.height = "100vh";
+        this.inProcesTaskCol.style.height = "100vh%";
+        this.planedTaskCol.style.height = "100vh%";
         document.getElementById("wrapper")?.append(this.planedTaskCol, this.inProcesTaskCol, this.doneTaskCol);
         this.dragOver();
     }
@@ -75,9 +88,9 @@ export class TaskViewCartList{
         this.list.push(cart);
     }
     drawAll(){
-        this.planedTaskCol.innerHTML ="";
-        this.inProcesTaskCol.innerHTML ="";
-        this.doneTaskCol.innerHTML ="";
+        this.planedTaskCol.innerHTML ="<h2>Planned</h2>";
+        this.inProcesTaskCol.innerHTML ="<h2>In Process</h2>";
+        this.doneTaskCol.innerHTML ="<h2>Done</h2>";
         this.list.forEach(element => {
             switch(element.Type){
                 case TaskType.Planed:
@@ -93,6 +106,12 @@ export class TaskViewCartList{
                     break;
             }
         });
+    }
+
+    changeType(id : number, type : TaskType) : void{
+        let a = this.list.find(x=>x.CartId==id);
+        (a as TaskViewCart).Type = type;
+        a?.drawCart();
     }
 
     dragEnd(onDragOver : CallableFunction){
@@ -114,31 +133,59 @@ export class TaskViewCartList{
     }
 
     dragOver(){
-        this.planedTaskCol.addEventListener("dragover", (event) =>{ 
-            event.preventDefault();
-            this.planedTaskCol.style.backgroundColor = "red";
+        this.planedTaskCol.addEventListener("dragover", (event) =>{
+            if(isDropPosible==TaskType.Planed)event.preventDefault();
+        });
+        this.planedTaskCol.addEventListener("dragenter", (event) =>{
+            if(isDropPosible==TaskType.Planed){
+                event.preventDefault();
+                this.planedTaskCol.style.backgroundColor = "green";
+            }
+            else{
+                this.planedTaskCol.style.backgroundColor = "red";
+            }
         });
         this.planedTaskCol.addEventListener("dragleave", (event) =>{ 
             event.preventDefault();
             this.planedTaskCol.style.backgroundColor = "yellow";
         });
-
+////////////////////////////
         this.inProcesTaskCol.addEventListener("dragover", (event) =>{ 
-            event.preventDefault();
-            this.inProcesTaskCol.style.backgroundColor = "red";
+            if(isDropPosible!=TaskType.Done) event.preventDefault();
+        });
+        this.inProcesTaskCol.addEventListener("dragenter", (event) =>{
+            if(isDropPosible!=TaskType.Done){
+                event.preventDefault();
+                this.inProcesTaskCol.style.backgroundColor = "green";
+            }
+            else{
+                this.inProcesTaskCol.style.backgroundColor = "red";
+            }
         });
         this.inProcesTaskCol.addEventListener("dragleave", (event) =>{ 
             event.preventDefault();
             this.inProcesTaskCol.style.backgroundColor = "yellow";
         });
+/////////////////////////////////////
 
         this.doneTaskCol.addEventListener("dragover", (event) =>{ 
-            event.preventDefault();
-            this.doneTaskCol.style.backgroundColor = "red";
+            if(isDropPosible!=TaskType.Planed) event.preventDefault();
         });
         this.doneTaskCol.addEventListener("dragleave", (event) =>{ 
             event.preventDefault();
             this.doneTaskCol.style.backgroundColor = "yellow";
         });
+        this.doneTaskCol.addEventListener("dragenter", (event) =>{
+            if(isDropPosible!=TaskType.Planed){
+                event.preventDefault();
+                this.doneTaskCol.style.backgroundColor = "green";
+            }
+            else{
+                this.doneTaskCol.style.backgroundColor = "red";
+            }
+        });
     }
 }
+
+
+

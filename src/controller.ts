@@ -15,23 +15,31 @@ export class Controller{
     }
 
     onDragEnd = (taskType : TaskType, cart : number) =>{
-        const task = this.taskList.getTask(cart)
-        console.log(task)
-        if (task) {
+        const taskInDateBase = this.taskList.getTask(cart)
+        if (taskInDateBase) {
             switch (taskType){
                 case TaskType.Planed:
-                    task.changeType(TaskType.Planed);
+                    taskInDateBase.changeType(TaskType.Planed);
+                    this.viewList.changeType(cart, TaskType.Planed);
                     break;
                 case TaskType.InProgres:
-                    task.changeType(TaskType.InProgres);
+                    taskInDateBase.changeType(TaskType.InProgres);
+                    this.viewList.changeType(cart, TaskType.InProgres);
                     break;
                 case TaskType.Done:
-                    task.changeType(TaskType.Done);
+                    taskInDateBase.changeType(TaskType.Done);
+                    this.viewList.changeType(cart, TaskType.Done);
                     break;
                 default:
                     break;
             }
         }
         this.viewList.drawAll();
+    }
+
+    showAllDate(){
+        this.taskList.list.forEach(task=>{
+            console.log(task);
+        });
     }
 }
