@@ -47,7 +47,8 @@ export class TaskViewCart{
 
     onDragStart(){
         this.cart.addEventListener("dragstart",  (event)=>{
-            event.dataTransfer?.setData("number", this.CartId.toString());
+            let a = this.CartId.toString();
+            event.dataTransfer?.setData("number", a);
         })
        
     }
@@ -120,14 +121,14 @@ export class TaskViewCartList{
     }
 
     dragOver(){
-        this.planedTaskCol.addEventListener("dragover", (event) =>{
-            let a = event.dataTransfer?.getData("number") as string;
+        this.planedTaskCol.addEventListener("dragover", (DragEvent) =>{
+            let a = DragEvent.dataTransfer?.getData("number") as string;
             console.log(a)
-            if((this.getTaskCartById(Number.parseInt(a)) as TaskViewCart).Type != TaskType.Planed){
+            if((this.getTaskCartById(Number.parseInt(a, 10)) as TaskViewCart).Type != TaskType.Planed){
                 this.planedTaskCol.style.backgroundColor = "red";
             }
             else{
-                event.preventDefault();
+                DragEvent.preventDefault();
                 this.planedTaskCol.style.backgroundColor = "green"; 
             }
             
