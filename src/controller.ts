@@ -1,4 +1,4 @@
-import {Task, TaskList, TaskType} from "./model"
+import {TaskList, TaskType} from "./model"
 import {TaskViewCart, TaskViewCartList } from "./view"
 
 export class Controller{

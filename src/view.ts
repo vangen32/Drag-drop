@@ -1,4 +1,4 @@
-import {Task, TaskList, TaskType} from "./model"
+import {Task, TaskType} from "./model"
  
 var isDropPosible : TaskType; //потрібно для збереження типу завдання
 
