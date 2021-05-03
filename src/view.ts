@@ -39,6 +39,7 @@ export class TaskViewCart{
     }
     set Type(TaskType : TaskType){
         this.task.changeType(TaskType);
+        this.type.innerText = this.task.Type;
     }
     get Cart(){
         return this.cart;
@@ -47,6 +48,7 @@ export class TaskViewCart{
         return this.task.TaskId;
     }
 
+<<<<<<< HEAD
     onDrag(){
         this.cart.addEventListener("dragstart",  (event : DragEvent)=>{
             event.dataTransfer?.setData("number", this.CartId.toString());
@@ -56,6 +58,14 @@ export class TaskViewCart{
         this.cart.addEventListener("dragend",  (event : DragEvent)=>{
             event.dataTransfer?.setData("number", this.CartId.toString());
             this.cart.style.backgroundColor = "pink";
+=======
+    onDragStart(){
+        this.cart.addEventListener("dragstart",  (event)=>{
+            let a = this.CartId.toString();
+            event.dataTransfer?.setData("number", a);
+            event.dataTransfer?.setData("numberr", a);
+            console.log(a.toString());
+>>>>>>> master
         })
     }
     
@@ -83,10 +93,15 @@ export class TaskViewCartList{
         document.getElementById("wrapper")?.append(this.planedTaskCol, this.inProcesTaskCol, this.doneTaskCol);
         this.dragOver();
     }
-    
+
     addCart(cart : TaskViewCart){
         this.list.push(cart);
     }
+
+    getTaskCartById(id : number) : TaskViewCart | undefined{
+        return this.list.find(x=>x.CartId==id);
+    }
+
     drawAll(){
         this.planedTaskCol.innerHTML ="<h2>Planned</h2>";
         this.inProcesTaskCol.innerHTML ="<h2>In Process</h2>";
@@ -117,23 +132,24 @@ export class TaskViewCartList{
     dragEnd(onDragOver : CallableFunction){
         this.planedTaskCol.addEventListener("drop", (event) =>{
             let a = event.dataTransfer?.getData("number");
-            this.planedTaskCol.style.backgroundColor = "yellow";
-            onDragOver(TaskType.Planed, a)
+            (this.getTaskCartById(Number.parseInt(a as string)) as TaskViewCart).Type = TaskType.Planed;
+            onDragOver(TaskType.Planed, a);
         });
         this.inProcesTaskCol.addEventListener("drop", (event) =>{ 
             let a = event.dataTransfer?.getData("number");
-            this.inProcesTaskCol.style.backgroundColor = "yellow";
+            (this.getTaskCartById(Number.parseInt(a as string)) as TaskViewCart).Type = TaskType.InProgres;
             onDragOver(TaskType.InProgres, a)
         });
         this.doneTaskCol.addEventListener("drop", (event) =>{ 
             let a = event.dataTransfer?.getData("number");
-            this.doneTaskCol.style.backgroundColor = "yellow";
+            (this.getTaskCartById(Number.parseInt(a as string)) as TaskViewCart).Type = TaskType.Done;
             onDragOver(TaskType.Done, a)
         });
     }
 
     dragOver(){
         this.planedTaskCol.addEventListener("dragover", (event) =>{
+<<<<<<< HEAD
             if(isDropPosible==TaskType.Planed)event.preventDefault();
         });
         this.planedTaskCol.addEventListener("dragenter", (event) =>{
@@ -144,6 +160,18 @@ export class TaskViewCartList{
             else{
                 this.planedTaskCol.style.backgroundColor = "red";
             }
+=======
+            let a = event.dataTransfer?.getData("numberr");
+            console.log(a);
+            if((this.getTaskCartById(Number.parseInt(a as string, 10)) as TaskViewCart).Type != TaskType.Planed){
+                this.planedTaskCol.style.backgroundColor = "red";
+            }
+            else{
+                event.preventDefault();
+                this.planedTaskCol.style.backgroundColor = "green"; 
+            }
+            
+>>>>>>> master
         });
         this.planedTaskCol.addEventListener("dragleave", (event) =>{ 
             event.preventDefault();
@@ -151,15 +179,24 @@ export class TaskViewCartList{
         });
 ////////////////////////////
         this.inProcesTaskCol.addEventListener("dragover", (event) =>{ 
+<<<<<<< HEAD
             if(isDropPosible!=TaskType.Done) event.preventDefault();
         });
         this.inProcesTaskCol.addEventListener("dragenter", (event) =>{
             if(isDropPosible!=TaskType.Done){
+=======
+            let a = event.dataTransfer?.getData("number");
+            if((this.getTaskCartById(Number.parseInt(a as string)) as TaskViewCart).Type == TaskType.Planed){
+>>>>>>> master
                 event.preventDefault();
                 this.inProcesTaskCol.style.backgroundColor = "green";
             }
             else{
+<<<<<<< HEAD
                 this.inProcesTaskCol.style.backgroundColor = "red";
+=======
+                this.inProcesTaskCol.style.backgroundColor = "red"; 
+>>>>>>> master
             }
         });
         this.inProcesTaskCol.addEventListener("dragleave", (event) =>{ 
@@ -169,7 +206,18 @@ export class TaskViewCartList{
 /////////////////////////////////////
 
         this.doneTaskCol.addEventListener("dragover", (event) =>{ 
+<<<<<<< HEAD
             if(isDropPosible!=TaskType.Planed) event.preventDefault();
+=======
+            let a = event.dataTransfer?.getData("number");
+            if((this.getTaskCartById(Number.parseInt(a as string)) as TaskViewCart).Type == TaskType.Planed){
+                event.preventDefault();
+                this.doneTaskCol.style.backgroundColor = "green";
+            }
+            else{
+                this.doneTaskCol.style.backgroundColor = "red"; 
+            }
+>>>>>>> master
         });
         this.doneTaskCol.addEventListener("dragleave", (event) =>{ 
             event.preventDefault();

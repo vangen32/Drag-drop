@@ -15,8 +15,14 @@ export class Controller{
     }
 
     onDragEnd = (taskType : TaskType, cart : number) =>{
+<<<<<<< HEAD
         const taskInDateBase = this.taskList.getTask(cart)
         if (taskInDateBase) {
+=======
+        const task = this.taskList.getTask(cart)
+        
+        if (task) {
+>>>>>>> master
             switch (taskType){
                 case TaskType.Planed:
                     taskInDateBase.changeType(TaskType.Planed);
